@@ -3,131 +3,290 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Player - Frutiger Aero Edition</title>
+    <title>AeroStream Portal - Fruit Edition</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.3);
+            --aero-blue: #009efd;
+            --aero-green: #2af598;
+            --gloss: linear-gradient(to bottom, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.05) 100%);
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; cursor: default; }
 
         body {
-            /* Fundo clássico Frutiger: Gradiente Aurora com cara de natureza/tecnologia */
-            background: radial-gradient(circle at top left, #2af598 0%, #009efd 100%);
+            background: 
+                url('https://www.transparenttextures.com/patterns/cubes.png'),
+                radial-gradient(circle at 50% 50%, #b4f8c8 0%, #a0e7fb 50%, #4facfe 100%);
             min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            padding: 20px;
+            flex-direction: column;
+            overflow-x: hidden;
         }
 
-        .container {
-            width: 100%;
-            max-width: 850px;
-            /* Efeito Vidro Aero Realista */
-            background: rgba(255, 255, 255, 0.25);
+        /* --- CABEÇALHO --- */
+        header {
+            background: var(--glass-bg);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2), 
-                        inset 0 0 20px rgba(255, 255, 255, 0.3);
-            padding: 40px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            border-bottom: 2px solid rgba(255,255,255,0.5);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%; background: rgba(255,255,255,0.3); pointer-events: none; }
+
+        .logo { font-size: 24px; font-weight: 900; color: #fff; text-shadow: 0 2px 4px rgba(0,120,255,0.5); display: flex; align-items: center; gap: 10px; }
+
+        nav ul { display: flex; list-style: none; gap: 20px; }
+        nav ul li a {
+            padding: 8px 20px;
+            color: white;
+            text-decoration: none;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.4);
+            font-weight: 600;
+            transition: 0.3s;
+            box-shadow: inset 0 2px 2px rgba(255,255,255,0.5);
+        }
+        nav ul li a:hover { background: var(--aero-blue); transform: scale(1.05); }
+
+        /* --- LAYOUT PRINCIPAL --- */
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 250px 1fr 250px;
+            gap: 20px;
+            padding: 30px;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* --- WIDGETS LATERAIS --- */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .widget {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.4);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             position: relative;
             overflow: hidden;
         }
 
-        /* O famoso brilho de vidro (Glossy overlay) */
-        .container::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 50%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%);
-            pointer-events: none;
-        }
+        .widget::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--gloss); pointer-events: none; }
 
-        h1 {
-            color: #fff;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            font-size: 28px;
-            margin-bottom: 25px;
-            font-weight: 700;
-        }
+        .widget h3 { color: #005a8d; font-size: 14px; margin-bottom: 10px; text-transform: uppercase; }
+        .eco-stat { font-size: 24px; color: #fff; font-weight: bold; text-shadow: 0 1px 3px rgba(0,0,0,0.2); }
 
-        .input-group {
+        /* --- REPRODUTOR CENTRAL --- */
+        .content-area {
             display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .player-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
+            padding: 30px;
+            border: 2px solid rgba(255,255,255,0.6);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.2), inset 0 0 20px rgba(255,255,255,0.3);
             position: relative;
-            z-index: 2;
+        }
+
+        .input-glass-group {
+            display: flex;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 50px;
+            padding: 8px 8px 8px 25px;
+            border: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 25px;
         }
 
         input[type="text"] {
             flex: 1;
-            padding: 15px 25px;
-            border-radius: 50px;
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            background: rgba(255, 255, 255, 0.8);
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
-            font-size: 16px;
+            background: transparent;
+            border: none;
+            color: #2af598;
+            font-family: 'Courier New', monospace;
             outline: none;
-            color: #333;
-        }
-
-        /* Botão Estilo Bolha de Gel (Skeuomorphic) */
-        button {
-            padding: 15px 35px;
-            border-radius: 50px;
-            border: 1px solid #00c6ff;
-            background: linear-gradient(to bottom, #00c6ff 0%, #0072ff 100%);
-            color: white;
-            font-weight: bold;
             font-size: 16px;
+        }
+
+        .btn-play {
+            background: linear-gradient(to bottom, #2af598, #009efd);
+            border: none;
+            padding: 12px 35px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 900;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4), 
-                        inset 0 2px 2px rgba(255,255,255,0.5);
-            transition: all 0.2s;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 15px rgba(0,255,100,0.3), inset 0 2px 2px rgba(255,255,255,0.5);
+            transition: 0.2s;
         }
 
-        button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
-            background: linear-gradient(to bottom, #00d4ff 0%, #0082ff 100%);
-        }
+        .btn-play:hover { transform: scale(1.05); filter: brightness(1.1); }
 
-        .player-wrapper {
+        .screen {
             width: 100%;
-            aspect-ratio: 16 / 9;
+            aspect-ratio: 16/9;
             background: #000;
             border-radius: 20px;
+            border: 8px solid #e0e0e0;
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.5);
             overflow: hidden;
             display: none;
-            border: 5px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        video, iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+        /* --- RODAPÉ ESTILO TASKBAR --- */
+        footer {
+            height: 50px;
+            background: rgba(0, 50, 100, 0.5);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-top: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            font-size: 13px;
         }
+
+        .start-btn {
+            background: radial-gradient(circle, #a1ffce, #2af598);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 0 10px rgba(0,255,100,0.5);
+        }
+
+        .system-tray { display: flex; gap: 15px; align-items: center; }
+
+        /* Animação de Bolhas */
+        .bubble {
+            position: fixed;
+            background: rgba(255,255,255,0.4);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            animation: float 10s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Fruit Aero Video Player</h1>
-        
-        <div class="input-group">
-            <input type="text" id="videoUrl" placeholder="Insira o link aqui...">
-            <button onclick="loadVideo()">PLAY</button>
-        </div>
+    <!-- Bolhas de fundo -->
+    <div class="bubble" style="width: 80px; height: 80px; left: 10%; animation-delay: 0s;"></div>
+    <div class="bubble" style="width: 40px; height: 40px; left: 80%; animation-delay: 3s;"></div>
+    <div class="bubble" style="width: 120px; height: 120px; left: 50%; animation-delay: 5s;"></div>
 
-        <div class="player-wrapper" id="playerWrapper"></div>
-    </div>
+    <header>
+        <div class="logo">
+            <img src="https://img.icons8.com/color/48/000000/windows-10-personalization.png" width="30"/>
+            AERO<span>STREAM</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Nature</a></li>
+                <li><a href="#">Media</a></li>
+                <li><a href="#">System</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Coluna Esquerda -->
+        <aside class="sidebar">
+            <div class="widget">
+                <h3>System Status</h3>
+                <div class="eco-stat">PURE AIR</div>
+                <p style="color:rgba(255,255,255,0.7); font-size:12px;">Oxygen: 98%</p>
+            </div>
+            <div class="widget">
+                <h3>Global Temp</h3>
+                <div class="eco-stat">24°C</div>
+                <p style="color:rgba(255,255,255,0.7); font-size:12px;">Tropical Breezes</p>
+            </div>
+            <div class="widget" style="background: rgba(0,255,150,0.2);">
+                <h3>Nokia Sync</h3>
+                <p style="color: white">Connected via IR...</p>
+            </div>
+        </aside>
+
+        <!-- Centro -->
+        <section class="content-area">
+            <div class="player-container">
+                <div class="input-glass-group">
+                    <input type="text" id="videoUrl" placeholder="Enter media source (MP4, YT, Webm)...">
+                    <button class="btn-play" onclick="loadVideo()">PLAY MEDIA</button>
+                </div>
+                
+                <div class="screen" id="playerWrapper"></div>
+            </div>
+            
+            <div style="display: flex; gap: 15px;">
+                <button class="btn-play" style="background: var(--aero-blue)">REFRESH GLASS</button>
+                <button class="btn-play" style="background: #fff; color: #333;">CLEAN WATER</button>
+            </div>
+        </section>
+
+        <!-- Coluna Direita -->
+        <aside class="sidebar">
+            <div class="widget">
+                <h3>Current Playlist</h3>
+                <ul style="color: white; list-style: none; font-size: 13px;">
+                    <li>🌊 Ocean Breeze.mp4</li>
+                    <li>🦋 Butterfly_Flight.avi</li>
+                    <li>🍏 Fruit_Aurora.wmv</li>
+                </ul>
+            </div>
+            <div class="widget">
+                <h3>Eco Map</h3>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/e/ee/World-map-2004-cia-factbook.jpg" width="100%" style="border-radius: 10px; margin-top: 10px;">
+            </div>
+        </aside>
+    </main>
+
+    <footer>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="start-btn"></div>
+            <span>Connected to Aurora Network</span>
+        </div>
+        <div class="system-tray">
+            <span>📶</span>
+            <span>🔊 100%</span>
+            <span id="clock">12:00 PM</span>
+        </div>
+    </footer>
 
     <script>
         function loadVideo() {
@@ -148,15 +307,28 @@
                 iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
                 iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
                 iframe.allowFullscreen = true;
+                iframe.style.width = "100%";
+                iframe.style.height = "100%";
+                iframe.style.border = "none";
                 wrapper.appendChild(iframe);
             } else {
                 const video = document.createElement('video');
                 video.src = urlInput;
                 video.controls = true;
                 video.autoplay = true;
+                video.style.width = "100%";
+                video.style.height = "100%";
                 wrapper.appendChild(video);
             }
         }
+
+        // Relógio simples
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
     </script>
 </body>
 </html>
