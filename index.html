@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player Dark</title>
+    <style>
+        /* CSS - Tema Dark */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #1e1e1e;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #ffffff;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #333;
+            border-radius: 6px;
+            background-color: #2c2c2c;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #bb86fc; /* Cor de destaque */
+        }
+
+        input[type="text"]::placeholder {
+            color: #888;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            background-color: #bb86fc;
+            color: #121212;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: #9e67e0;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .player-wrapper {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            display: none; /* Oculto até que um vídeo seja carregado */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+        }
+
+        video, iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Reprodutor de Vídeo</h1>
+        
+        <div class="input-group">
+            <input type="text" id="videoUrl" placeholder="Cole o link do vídeo (MP4 ou YouTube)..." autocomplete="off">
+            <button onclick="loadVideo()">Play</button>
+        </div>
+
+        <div class="player-wrapper" id="playerWrapper">
+            <!-- O player (video ou iframe) será injetado aqui via JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // JavaScript - Lógica do Player
+        function loadVideo() {
+            const urlInput = document.getElementById('videoUrl').value.trim();
+            const wrapper = document.getElementById('playerWrapper');
+            
+            if (!urlInput) {
+                alert("Por favor, insira um link válido.");
+                return;
+            }
+
+            // Exibe a área do player e limpa o conteúdo anterior
+            wrapper.style.display = 'block';
+            wrapper.innerHTML = ''; 
+
+            // Regex para detectar links do YouTube e extrair o ID do vídeo
+            const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+            const ytMatch = urlInput.match(ytRegex);
+
+            if (ytMatch && ytMatch[1]) {
+                // Se for um link do YouTube, cria um iframe
+                const videoId = ytMatch[1];
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                iframe.allowFullscreen = true;
+                wrapper.appendChild(iframe);
+            } else {
+                // Caso contrário, assume que é um link direto de vídeo (ex: .mp4, .webm)
+                const video = document.createElement('video');
+                video.src = urlInput;
+                video.controls = true;
+                video.autoplay = true;
+                wrapper.appendChild(video);
+            }
+        }
+
+        // Permite apertar "Enter" no campo de texto para dar play
+        document.getElementById('videoUrl').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                loadVideo();
+            }
+        });
+    </script>
+
+</body>
+</html>
